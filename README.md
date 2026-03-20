@@ -1,37 +1,36 @@
-# KRATOS Terminal
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-A highly aesthetic, Bloomberg Terminal-style dashboard built for tracking prediction markets (Polymarket & Kalshi). It features advanced data tracking including a mocked God's Eye OSINT aggregator, live interactive Globe, and a simulation panel that mocks the 666ghj/MiroFish multi-agent Swarm Intelligence prediction model.
+## Getting Started
 
-## Features
+First, run the development server:
 
-- **Dark Amber Terminal Aesthetic**: CRT scanline effects, text-shadow glowing typography, custom scrollbars, and dense but readable grid layouts.
-- **Market Overview**: Live data fetcher from Polymarket's Gamma API, injected with mock Kalshi regulated events for cross-platform tracking. Filterable by search.
-- **Global Macro Context**: Real-time traditional market mocks (NASDAQ, S&P 500) and Crypto Major pairs for correlation tracking.
-- **God's Eye OSINT View**: 
-  - *Sports Markets*: Historical win rates, injury reports, momentum tracking.
-  - *Non-Sports Markets*: Global OSINT aggregation, Sentiment Analysis (Social/News/Dark Web), and Regulatory/Legal docket scraping simulation. Features a 3D rotating globe (`cobe`).
-- **MiroFish Swarm Simulation**: Mocks the process of a 1000-agent parallel intelligence engine analyzing a specific market to provide an updated probability forecast.
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
 
-## How to Run Locally
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You will need Node.js (v18+) installed.
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-1. **Navigate to the terminal directory**:
-   ```bash
-   cd kratos-terminal
-   ```
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-2. **Install the dependencies**:
-   ```bash
-   npm install
-   ```
+## Learn More
 
-3. **Start the development server**:
-   ```bash
-   npm run dev
-   ```
+To learn more about Next.js, take a look at the following resources:
 
-4. **Access the application**:
-   Open your browser and navigate to `http://localhost:5173`. 
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-*Note: The application is responsive but is best viewed on a desktop monitor in full screen to appreciate the terminal dashboard layout.*
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
