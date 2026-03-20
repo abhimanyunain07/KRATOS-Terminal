@@ -6,7 +6,7 @@ import useAppStore from '@/store/useAppStore';
 const Globe = dynamic(() => import('react-globe.gl').then(mod => mod.default), { ssr: false });
 
 export default function InteractiveGlobe() {
-  const globeEl = useRef<any>();
+  const globeEl = useRef<any>(null);
   const [windowDimensions, setWindowDimensions] = useState({ width: 800, height: 600 });
   const activeLayer = useAppStore(state => state.activeLayer);
 
