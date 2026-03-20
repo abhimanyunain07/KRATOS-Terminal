@@ -126,6 +126,13 @@ export function InteractiveGlobe({
     }
   }, []);
 
+  // Handle interaction pause on hover
+  const onHover = (obj: any) => {
+    if (globeEl.current) {
+      globeEl.current.controls().autoRotate = !obj;
+    }
+  };
+
   if (dimensions.width === 0) {
      return <div ref={containerRef} className="w-full h-full" />;
   }
@@ -153,10 +160,15 @@ export function InteractiveGlobe({
         pointAltitude={d => (d as any).riskLevel === 'CRITICAL' ? 0.05 : 0.01}
         pointRadius="size"
         pointResolution={32}
-        onPointClick={(d) => onNodeClick && onNodeClick({ layer: 'MAP', data: d })}
+        pointLabel="name"
+        onPointHover={onHover}
+        onPointClick={(d) => {
+          onNodeClick && onNodeClick({ layer: 'MAP', data: d });
+        }}
         
         // --- POSH Layer (Ships) ---
         customLayerData={showShips ? poshShips : []}
+        customLayerLabel="name"
         customThreeObject={(d: any) => {
           // Render a small glowing sphere or cone for ships
           const geom = new THREE.CylinderGeometry(0, d.size, d.size * 2, 8);
@@ -173,17 +185,28 @@ export function InteractiveGlobe({
           // make ship point outward
           obj.lookAt(globeEl.current.getCoords(d.lat, d.lng, 2));
         }}
-        onCustomLayerClick={(d) => onNodeClick && onNodeClick({ layer: 'POSH', data: d })}
+        onCustomLayerHover={onHover}
+        onCustomLayerClick={(d) => {
+          onNodeClick && onNodeClick({ layer: 'POSH', data: d });
+        }}
 
         // --- SPLC Layer (Supply Chain Links) ---
         arcsData={showLinks ? splcLinks : []}
+        arcStartLat="startLat"
+        arcStartLng="startLng"
+        arcEndLat="endLat"
+        arcEndLng="endLng"
         arcColor="color"
         arcDashLength={0.5}
         arcDashGap={0.2}
         arcDashAnimateTime={(d: any) => d.color[0] === '#ef4444' ? 1000 : 3000} // Fast animation for risk links
         arcStroke={(d: any) => d.color[0] === '#ef4444' ? 0.8 : 0.3}
         arcAltitudeAutoScale={0.2}
-        onArcClick={(d) => onNodeClick && onNodeClick({ layer: 'SPLC', data: d })}
+        arcLabel={(d: any) => `${d.sourceName} ➔ ${d.targetName}`}
+        onArcHover={onHover}
+        onArcClick={(d) => {
+          onNodeClick && onNodeClick({ layer: 'SPLC', data: d });
+        }}
 
         // Atmosphere styling (Intense Bloomberg/Terminal style)
         atmosphereColor="#0ea5e9"
@@ -193,6 +216,9 @@ export function InteractiveGlobe({
         hexPolygonResolution={3}
         hexPolygonMargin={0.7}
         hexPolygonColor={() => '#111827'}
+
+        // Interaction configuration
+        enablePointerInteraction={true}
       />
     </div>
   );
