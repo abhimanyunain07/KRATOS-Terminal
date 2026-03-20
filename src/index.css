@@ -1,0 +1,54 @@
+@import "tailwindcss";
+
+@theme {
+  --font-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+@layer utilities {
+  .text-shadow-amber {
+    text-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+  }
+  .text-shadow-red {
+    text-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+  }
+  .text-shadow-green {
+    text-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
+  }
+  .box-shadow-amber {
+    box-shadow: 0 0 15px rgba(245, 158, 11, 0.1) inset;
+  }
+  .scrollbar-custom::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  .scrollbar-custom::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.3);
+  }
+  .scrollbar-custom::-webkit-scrollbar-thumb {
+    background: rgba(120, 53, 15, 0.6);
+    border-radius: 3px;
+  }
+  .scrollbar-custom::-webkit-scrollbar-thumb:hover {
+    background: rgba(180, 83, 9, 0.8);
+  }
+}
+
+body {
+  background-color: #000;
+  color: #f59e0b;
+}
+
+/* CRT Scanline Effect */
+.scanlines::before {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+  z-index: 50;
+  background-size: 100% 2px, 3px 100%;
+  pointer-events: none;
+}
