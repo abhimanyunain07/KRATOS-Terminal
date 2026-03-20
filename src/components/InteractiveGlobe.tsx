@@ -7,6 +7,7 @@ const Globe = dynamic(() => import('react-globe.gl').then(mod => mod.default), {
 
 export default function InteractiveGlobe() {
   const globeEl = useRef<any>(null);
+  const [mounted, setMounted] = useState(false);
   const [windowDimensions, setWindowDimensions] = useState({ width: 800, height: 600 });
   const activeLayer = useAppStore(state => state.activeLayer);
 
@@ -22,6 +23,7 @@ export default function InteractiveGlobe() {
   ], []);
 
   useEffect(() => {
+    setMounted(true);
     if (typeof window !== 'undefined') {
       const handleResize = () => setWindowDimensions({ width: window.innerWidth, height: window.innerHeight - 80 });
       handleResize();
@@ -43,7 +45,7 @@ export default function InteractiveGlobe() {
 
   return (
     <div className="flex-1 w-full h-full relative cursor-crosshair">
-      <Globe
+      {mounted && <Globe
         ref={globeEl}
         width={windowDimensions.width}
         height={windowDimensions.height}
@@ -76,7 +78,7 @@ export default function InteractiveGlobe() {
         
         // Settings
         enablePointerInteraction={true}
-      />
+      />}
     </div>
   );
 }

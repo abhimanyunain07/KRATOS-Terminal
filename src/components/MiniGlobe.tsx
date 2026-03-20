@@ -1,14 +1,16 @@
 'use client';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 
 // Dynamically import Globe to avoid SSR issues with window/document
 const Globe = dynamic(() => import('react-globe.gl'), { ssr: false });
 
 export default function MiniGlobe() {
-  const globeEl = useRef<any>();
+  const globeEl = useRef<any>(null);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     if (globeEl.current) {
       globeEl.current.controls().autoRotate = true;
       globeEl.current.controls().autoRotateSpeed = 1.0;
@@ -19,7 +21,7 @@ export default function MiniGlobe() {
 
   return (
     <div className="absolute inset-0 z-0 opacity-70">
-      {typeof window !== 'undefined' && <Globe
+      {mounted && <Globe
         ref={globeEl}
         width={300} // Approximate width of a standard grid panel
         height={250}
