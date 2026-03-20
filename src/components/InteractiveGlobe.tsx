@@ -1,14 +1,105 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import Globe from 'react-globe.gl';
+import * as THREE from 'three';
 
-export function InteractiveGlobe() {
+// Simulated BQL/SPLC/POSH data generators
+const N_ASSETS = 300;
+const N_SHIPS = 120;
+const N_LINKS = 80;
+
+// Geopolitical Danger Zones
+const DANGER_ZONES = [
+  { lat: 23.5, lng: 121, name: "Taiwan Strait", risk: "CRITICAL" },
+  { lat: 25.0, lng: 55.0, name: "Strait of Hormuz", risk: "SEVERE" },
+  { lat: 48.0, lng: 37.0, name: "Black Sea Corridor", risk: "CRITICAL" },
+  { lat: 10.0, lng: 114.0, name: "South China Sea", risk: "HIGH" }
+];
+
+export function InteractiveGlobe({
+  activeLayer = 'MAP', // MAP, SPLC, POSH
+  onNodeClick,
+}: {
+  activeLayer?: 'MAP' | 'SPLC' | 'POSH';
+  onNodeClick?: (nodeData: any) => void;
+}) {
   const globeEl = useRef<any>(null);
-  const [places, setPlaces] = useState<any[]>([]);
-  const [flights, setFlights] = useState<any[]>([]);
-  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
+  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
 
-  // Responsive resize
+  // 1. MAP Layer Data: Global Physical Assets (Refineries, Factories, Hubs)
+  const mapAssets = useMemo(() => {
+    return Array.from({ length: N_ASSETS }).map((_, i) => {
+      const isRefinery = Math.random() > 0.6;
+      const lat = (Math.random() - 0.5) * 160;
+      const lng = (Math.random() - 0.5) * 360;
+      // Check if near danger zone
+      const nearDanger = DANGER_ZONES.some(z => Math.abs(z.lat - lat) < 15 && Math.abs(z.lng - lng) < 15);
+      
+      return {
+        id: `ast-${i}`,
+        type: isRefinery ? 'Refinery' : 'Semiconductor Fab',
+        lat,
+        lng,
+        size: Math.random() * 0.8 + 0.2,
+        color: nearDanger ? '#ef4444' : isRefinery ? '#eab308' : '#3b82f6',
+        name: `${isRefinery ? 'Energy Hub' : 'Tech Mfg'} ${Math.floor(Math.random() * 999)}`,
+        riskLevel: nearDanger ? 'CRITICAL' : 'NOMINAL',
+        capacity: Math.floor(Math.random() * 10000) + ' MT',
+        revenueAtRisk: nearDanger ? `$${(Math.random() * 5 + 1).toFixed(1)}B` : '$0',
+      };
+    });
+  }, []);
+
+  // 2. POSH Layer Data: Maritime Tracking & Dark Fleet
+  const poshShips = useMemo(() => {
+    return Array.from({ length: N_SHIPS }).map((_, i) => {
+      const isDarkFleet = Math.random() > 0.8;
+      const lat = (Math.random() - 0.5) * 140; // Avoid poles
+      const lng = (Math.random() - 0.5) * 360;
+      const draftChange = Math.random();
+      const anomaly = isDarkFleet || draftChange > 0.8;
+
+      return {
+        id: `shp-${i}`,
+        mmsi: Math.floor(100000000 + Math.random() * 900000000),
+        lat,
+        lng,
+        size: anomaly ? 0.6 : 0.3,
+        color: anomaly ? '#ef4444' : '#22c55e',
+        name: `Tanker IMO-${Math.floor(Math.random() * 9999)}`,
+        status: anomaly ? (draftChange > 0.8 ? 'STS Transfer Detected' : 'AIS Spoofing') : 'Underway',
+        draft: (Math.random() * 10 + 5).toFixed(1) + 'm',
+        speed: (Math.random() * 20).toFixed(1) + ' kts',
+        isAnomaly: anomaly
+      };
+    });
+  }, []);
+
+  // 3. SPLC Layer Data: Supply Chain Relationships
+  const splcLinks = useMemo(() => {
+    return Array.from({ length: N_LINKS }).map(() => {
+      const source = mapAssets[Math.floor(Math.random() * mapAssets.length)];
+      let target = mapAssets[Math.floor(Math.random() * mapAssets.length)];
+      while (source.id === target.id) target = mapAssets[Math.floor(Math.random() * mapAssets.length)];
+
+      const isHighRisk = source.riskLevel === 'CRITICAL' || target.riskLevel === 'CRITICAL';
+
+      return {
+        startLat: source.lat,
+        startLng: source.lng,
+        endLat: target.lat,
+        endLng: target.lng,
+        sourceName: source.name,
+        targetName: target.name,
+        color: isHighRisk ? ['#ef4444', '#f97316'] : ['#0ea5e9', '#3b82f6'],
+        dependency: (Math.random() * 40 + 10).toFixed(1) + '%',
+        valueStr: `$${(Math.random() * 900 + 100).toFixed(0)}M`
+      };
+    });
+  }, [mapAssets]);
+
+
+  // Handle resize
   useEffect(() => {
     const handleResize = () => {
       if (containerRef.current) {
@@ -23,81 +114,86 @@ export function InteractiveGlobe() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Initialize data
+  // Initial Globe config
   useEffect(() => {
-    // Generate simulated military/intel bases
-    const N = 50;
-    const intelPoints = Array.from({ length: N }).map(() => ({
-      lat: (Math.random() - 0.5) * 160,
-      lng: (Math.random() - 0.5) * 360,
-      maxR: Math.random() * 8 + 2,
-      propagationSpeed: (Math.random() - 0.5) * 2 + 1,
-      repeatPeriod: Math.random() * 2000 + 400
-    }));
-    setPlaces(intelPoints);
-
-    // Generate simulated flight/drone paths
-    const F = 20;
-    const arcData = Array.from({ length: F }).map(() => ({
-      startLat: (Math.random() - 0.5) * 160,
-      startLng: (Math.random() - 0.5) * 360,
-      endLat: (Math.random() - 0.5) * 160,
-      endLng: (Math.random() - 0.5) * 360,
-      color: ['#0ea5e9', '#ef4444', '#eab308'][Math.floor(Math.random() * 3)]
-    }));
-    setFlights(arcData);
-
-    // Initial spin configuration
     if (globeEl.current) {
       globeEl.current.controls().autoRotate = true;
-      globeEl.current.controls().autoRotateSpeed = 0.5;
+      globeEl.current.controls().autoRotateSpeed = 0.3;
       globeEl.current.controls().enableZoom = true;
-      globeEl.current.pointOfView({ lat: 20, lng: -40, altitude: 2 }, 2000);
+      
+      // Point to a high-density area
+      globeEl.current.pointOfView({ lat: 25, lng: 55, altitude: 1.5 }, 2000);
     }
   }, []);
 
-  // Fallback dimension so the globe doesn't crash on initial render
   if (dimensions.width === 0) {
      return <div ref={containerRef} className="w-full h-full" />;
   }
 
+  // Determine what data to show based on layer
+  const showAssets = activeLayer === 'MAP' || activeLayer === 'SPLC';
+  const showShips = activeLayer === 'POSH';
+  const showLinks = activeLayer === 'SPLC';
+
   return (
-    <div ref={containerRef} className="w-full h-full relative overflow-hidden bg-black/50 rounded-lg shadow-[0_0_30px_rgba(6,182,212,0.1)_inset]">
+    <div ref={containerRef} className="w-full h-full relative overflow-hidden bg-black cursor-crosshair">
       <Globe
         ref={globeEl}
         width={dimensions.width}
         height={dimensions.height}
-        globeImageUrl="//unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
+        globeImageUrl="//unpkg.com/three-globe/example/img/earth-night.jpg"
         bumpImageUrl="//unpkg.com/three-globe/example/img/earth-topology.png"
         backgroundImageUrl="//unpkg.com/three-globe/example/img/night-sky.png"
         
-        // Ping data for bases
-        ringsData={places}
-        ringColor={() => '#0ea5e9'}
-        ringMaxRadius="maxR"
-        ringPropagationSpeed="propagationSpeed"
-        ringRepeatPeriod="repeatPeriod"
+        // --- MAP Layer (Assets) ---
+        pointsData={showAssets ? mapAssets : []}
+        pointLat="lat"
+        pointLng="lng"
+        pointColor="color"
+        pointAltitude={d => (d as any).riskLevel === 'CRITICAL' ? 0.05 : 0.01}
+        pointRadius="size"
+        pointResolution={32}
+        onPointClick={(d) => onNodeClick && onNodeClick({ layer: 'MAP', data: d })}
+        
+        // --- POSH Layer (Ships) ---
+        customLayerData={showShips ? poshShips : []}
+        customThreeObject={(d: any) => {
+          // Render a small glowing sphere or cone for ships
+          const geom = new THREE.CylinderGeometry(0, d.size, d.size * 2, 8);
+          geom.rotateX(Math.PI / 2);
+          const mat = new THREE.MeshLambertMaterial({ 
+            color: d.color, 
+            emissive: d.color, 
+            emissiveIntensity: d.isAnomaly ? 0.8 : 0.2 
+          });
+          return new THREE.Mesh(geom, mat);
+        }}
+        customThreeObjectUpdate={(obj: any, d: any) => {
+          Object.assign(obj.position, globeEl.current.getCoords(d.lat, d.lng, 0.01));
+          // make ship point outward
+          obj.lookAt(globeEl.current.getCoords(d.lat, d.lng, 2));
+        }}
+        onCustomLayerClick={(d) => onNodeClick && onNodeClick({ layer: 'POSH', data: d })}
 
-        // Arcs for flights
-        arcsData={flights}
+        // --- SPLC Layer (Supply Chain Links) ---
+        arcsData={showLinks ? splcLinks : []}
         arcColor="color"
-        arcDashLength={0.4}
+        arcDashLength={0.5}
         arcDashGap={0.2}
-        arcDashAnimateTime={2000}
-        arcStroke={0.5}
+        arcDashAnimateTime={(d: any) => d.color[0] === '#ef4444' ? 1000 : 3000} // Fast animation for risk links
+        arcStroke={(d: any) => d.color[0] === '#ef4444' ? 0.8 : 0.3}
+        arcAltitudeAutoScale={0.2}
+        onArcClick={(d) => onNodeClick && onNodeClick({ layer: 'SPLC', data: d })}
 
-        // Add an atmosphere glow
-        atmosphereColor="#06b6d4"
+        // Atmosphere styling (Intense Bloomberg/Terminal style)
+        atmosphereColor="#0ea5e9"
         atmosphereAltitude={0.15}
+        
+        // Hex Polygons for styling landmasses
+        hexPolygonResolution={3}
+        hexPolygonMargin={0.7}
+        hexPolygonColor={() => '#111827'}
       />
-      
-      {/* HUD Overlay */}
-      <div className="absolute top-4 left-4 pointer-events-none text-[10px] text-cyan-500 font-mono tracking-widest leading-relaxed">
-         <div className="text-cyan-300 font-bold drop-shadow-[0_0_5px_rgba(6,182,212,0.8)]">SYS_CORE // GOD'S EYE</div>
-         <div>TRACKING: {places.length} BASES</div>
-         <div>UAV LINK: {flights.length} ACTIVES</div>
-         <div className="text-red-500 animate-pulse mt-2">[WARN] DEFCON STATUS 3</div>
-      </div>
     </div>
   );
 }
