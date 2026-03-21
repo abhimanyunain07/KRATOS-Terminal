@@ -14,6 +14,7 @@ KRATOS Terminal is a Bloomberg-inspired PMAP stack for prediction markets, rebui
 - Authenticated watchlist persistence route at `/api/watchlist` plus SQL schema in `supabase/schema.sql`
 - Authenticated saved PBQL queries at `/api/pbql/saved`, simulated position persistence at `/api/positions`, and session verification at `/api/session`
 - Authenticated terminal command history at `/api/commands`, plus aggregated portfolio metrics sourced from persisted simulated positions
+- Deployment diagnostics at `/deploy` and `/api/deploy/readiness`, plus GitHub Actions CI and `npm run check:env`
 - An interactive 3D globe with clickable market points, dependency arcs, hover tooltips, label drill-downs, and POSH-inspired vessel pulse rings
 - A 390-plus layer catalog and Zustand-based cross-panel interaction state
 
@@ -32,6 +33,12 @@ npm run dev
 ```
 
 3. Open [http://localhost:3000](http://localhost:3000)
+
+4. Optional deployment readiness check:
+
+```bash
+npm run check:env
+```
 
 ## Environment variables
 

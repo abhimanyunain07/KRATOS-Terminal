@@ -246,6 +246,22 @@ export type CommandHistorySnapshot = {
   note: string;
 };
 
+export type DeployCheck = {
+  key: string;
+  label: string;
+  status: "ready" | "missing" | "warning";
+  detail: string;
+};
+
+export type DeployReadinessReport = {
+  platform: string;
+  recommendedTarget: string;
+  checks: DeployCheck[];
+  readyCount: number;
+  totalCount: number;
+  note: string;
+};
+
 export type TradeSimulationRequest = {
   venue: "Kalshi" | "Polymarket";
   ticker: string;

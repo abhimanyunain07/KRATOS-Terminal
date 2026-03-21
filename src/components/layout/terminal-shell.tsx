@@ -3,7 +3,7 @@
 import { useTransition } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Activity, ArrowRightLeft, BrainCircuit, ChartColumn, Compass, Newspaper, Radar, Search, Ship, Terminal, Trophy, Wallet } from "lucide-react";
+import { Activity, ArrowRightLeft, BrainCircuit, ChartColumn, Compass, Newspaper, Radar, Rocket, Search, Ship, Terminal, Trophy, Wallet } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { authorizedFetch } from "@/lib/supabase";
 import { useKratosStore } from "@/store/kratos-store";
@@ -23,6 +23,7 @@ const NAV_ITEMS = [
   { href: "/posh", label: "POSH", short: "POSH", icon: Ship },
   { href: "/pbql", label: "PBQL", short: "BQL", icon: Radar },
   { href: "/portfolio", label: "Portfolio", short: "P&L", icon: Wallet },
+  { href: "/deploy", label: "Deploy", short: "SHIP", icon: Rocket },
 ];
 
 function StatusClock() {

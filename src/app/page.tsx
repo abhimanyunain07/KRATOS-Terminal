@@ -1,6 +1,7 @@
 import { PageHeader } from "@/components/layout/page-header";
 import { ArbitrageTable } from "@/components/panels/arb-table";
 import { CommandHistoryPanel } from "@/components/panels/command-history-panel";
+import { DeployReadinessPanel } from "@/components/panels/deploy-readiness-panel";
 import { MacroBoard } from "@/components/panels/macro-board";
 import { MiniGlobeCard } from "@/components/panels/mini-globe-card";
 import { NewsGrid } from "@/components/panels/news-grid";
@@ -76,6 +77,7 @@ export default async function DashboardPage() {
         </TerminalPanel>
         <CommandHistoryPanel />
       </div>
+      <DeployReadinessPanel />
     </div>
   );
 }
