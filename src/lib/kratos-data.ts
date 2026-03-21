@@ -264,7 +264,7 @@ function normalizeMarket(input: {
 async function fetchJson<T>(url: string): Promise<T | null> {
   try {
     const response = await fetch(url, {
-      next: { revalidate: 60 },
+      cache: "no-store",
       headers: {
         Accept: "application/json",
       },

@@ -30,3 +30,6 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      - name: Local smoke test
+        run: npm run smoke:test:local

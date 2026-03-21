@@ -46,6 +46,12 @@ npm run check:env
 npm run smoke:test -- https://your-deployment-url.vercel.app
 ```
 
+6. Optional local production-style smoke test:
+
+```bash
+npm run smoke:test:local
+```
+
 ## Environment variables
 
 These are optional for the current build, but the app is structured to consume them. You can start from `.env.example`:
@@ -66,3 +72,4 @@ NEWS_API_KEY=
 - Kalshi, Supabase auth, and wallet execution are environment-gated rather than faked.
 - The UI intentionally exposes production-ready slots for authenticated execution without pretending that unavailable credentials or proprietary feeds are live.
 - Deployment handoff details live in `docs/DEPLOYMENT.md`.
+- Supabase provisioning details live in `docs/SUPABASE_SETUP.md`.

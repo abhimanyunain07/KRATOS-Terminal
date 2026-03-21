@@ -11,6 +11,7 @@ const targets = [
   { path: "/api/health", label: "Runtime health" },
   { path: "/api/health/deep", label: "Deep health" },
   { path: "/api/deploy/readiness", label: "Deploy readiness" },
+  { path: "/api/release/summary", label: "Release summary" },
   { path: "/api/markets", label: "Markets feed" },
 ];
 
@@ -47,4 +48,3 @@ if (failed) {
 }
 
 console.log("\nSmoke test passed.");
-

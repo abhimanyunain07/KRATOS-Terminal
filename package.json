@@ -10,6 +10,7 @@
     "typecheck": "tsc --noEmit",
     "check:env": "node scripts/check-env.mjs",
     "smoke:test": "node scripts/smoke-test.mjs",
+    "smoke:test:local": "npm run build && node scripts/run-local-smoke.mjs",
     "ci": "npm run typecheck && npm run lint && npm run build"
   },
   "dependencies": {
