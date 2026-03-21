@@ -192,6 +192,25 @@ export type PortfolioSnapshot = {
   note: string;
 };
 
+export type WatchlistItem = {
+  id: string;
+  marketId: string;
+  title: string;
+  platform: "Polymarket" | "Kalshi" | "Manifold" | "PredictIt";
+  category: MarketCategory;
+  probability: number;
+  volume: number;
+  region: string;
+  createdAt: string;
+};
+
+export type WatchlistSnapshot = {
+  status: "auth_unavailable" | "auth_required" | "connected" | "connected_unconfigured";
+  accountLabel: string;
+  items: WatchlistItem[];
+  note: string;
+};
+
 export type TradeSimulationRequest = {
   venue: "Kalshi" | "Polymarket";
   ticker: string;

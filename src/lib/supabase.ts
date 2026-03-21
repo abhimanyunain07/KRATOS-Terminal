@@ -24,3 +24,14 @@ export function getBrowserSupabaseClient() {
   return browserClient;
 }
 
+export async function getBrowserAccessToken() {
+  const client = getBrowserSupabaseClient();
+
+  if (!client) {
+    return null;
+  }
+
+  const { data } = await client.auth.getSession();
+  return data.session?.access_token ?? null;
+}
+
