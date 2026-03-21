@@ -231,6 +231,21 @@ export type SessionSnapshot = {
   note: string;
 };
 
+export type CommandHistoryItem = {
+  id: string;
+  command: string;
+  kind: "navigation" | "pbql" | "unknown";
+  resolvedPath: string | null;
+  createdAt: string;
+};
+
+export type CommandHistorySnapshot = {
+  status: "auth_unavailable" | "auth_required" | "connected" | "connected_unconfigured";
+  accountLabel: string;
+  items: CommandHistoryItem[];
+  note: string;
+};
+
 export type TradeSimulationRequest = {
   venue: "Kalshi" | "Polymarket";
   ticker: string;

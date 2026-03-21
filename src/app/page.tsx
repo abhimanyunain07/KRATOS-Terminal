@@ -1,5 +1,6 @@
 import { PageHeader } from "@/components/layout/page-header";
 import { ArbitrageTable } from "@/components/panels/arb-table";
+import { CommandHistoryPanel } from "@/components/panels/command-history-panel";
 import { MacroBoard } from "@/components/panels/macro-board";
 import { MiniGlobeCard } from "@/components/panels/mini-globe-card";
 import { NewsGrid } from "@/components/panels/news-grid";
@@ -57,7 +58,24 @@ export default async function DashboardPage() {
         </TerminalPanel>
         <MiniGlobeCard universe={universe} />
       </div>
+      <div className="grid gap-4 xl:grid-cols-[1fr_0.42fr]">
+        <TerminalPanel title="Alpha Trades Extended" subtitle="Machine-ranked opportunity stack">
+          <div className="space-y-3">
+            {universe.markets.slice(6, 12).map((market, index) => (
+              <div key={market.id} className="rounded-2xl border border-white/8 bg-white/[0.03] p-4">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="text-sm text-white">{market.title}</p>
+                  <span className="text-xs text-cyan-300">#{index + 7}</span>
+                </div>
+                <p className="mt-2 text-xs text-slate-400">
+                  EV {(market.ev * 100).toFixed(1)}bps | Kelly {(market.kellyFraction * 100).toFixed(1)}% | Vol {formatCompactNumber(market.volume)}
+                </p>
+              </div>
+            ))}
+          </div>
+        </TerminalPanel>
+        <CommandHistoryPanel />
+      </div>
     </div>
   );
 }
-

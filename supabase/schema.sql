@@ -93,3 +93,26 @@ on public.simulated_positions
 for delete
 to authenticated
 using (auth.uid() = user_id);
+
+create table if not exists public.terminal_command_history (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  command text not null,
+  kind text not null,
+  resolved_path text,
+  created_at timestamptz not null default now()
+);
+
+alter table public.terminal_command_history enable row level security;
+
+create policy "command_history_select_own"
+on public.terminal_command_history
+for select
+to authenticated
+using (auth.uid() = user_id);
+
+create policy "command_history_insert_own"
+on public.terminal_command_history
+for insert
+to authenticated
+with check (auth.uid() = user_id);

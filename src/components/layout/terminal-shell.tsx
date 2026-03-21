@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Activity, ArrowRightLeft, BrainCircuit, ChartColumn, Compass, Newspaper, Radar, Search, Ship, Terminal, Trophy, Wallet } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { authorizedFetch } from "@/lib/supabase";
 import { useKratosStore } from "@/store/kratos-store";
 import { resolveTerminalCommand } from "@/lib/terminal-command";
 
@@ -46,6 +47,18 @@ export function TerminalShell({ children }: { children: React.ReactNode }) {
   function executeCommand() {
     const resolved = resolveTerminalCommand(command);
     setCommandFeedback(resolved.message);
+
+    void authorizedFetch("/api/commands", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        command,
+        kind: resolved.kind,
+        resolvedPath: resolved.href,
+      }),
+    });
 
     if (!resolved.href) {
       return;

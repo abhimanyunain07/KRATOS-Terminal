@@ -5,6 +5,7 @@ import type { PortfolioSnapshot } from "@/types/kratos";
 import { MetricCard } from "@/components/ui/metric-card";
 import { TerminalPanel } from "@/components/ui/terminal-panel";
 import { PositionsPanel } from "@/components/panels/positions-panel";
+import { authorizedFetch } from "@/lib/supabase";
 
 export function PortfolioSummary() {
   const [snapshot, setSnapshot] = useState<PortfolioSnapshot | null>(null);
@@ -12,7 +13,7 @@ export function PortfolioSummary() {
   useEffect(() => {
     let active = true;
 
-    void fetch("/api/portfolio")
+    void authorizedFetch("/api/portfolio")
       .then((response) => response.json())
       .then((payload: PortfolioSnapshot) => {
         if (active) {
