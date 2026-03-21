@@ -6,12 +6,14 @@ import type { MarketEntity } from "@/types/kratos";
 type KratosState = {
   activeLayerIds: string[];
   command: string;
+  commandFeedback: string;
   selectedEntity: MarketEntity | null;
   hoveredEntityId: string | null;
   hoveredTooltip: string | null;
   rotationPaused: boolean;
   toggleLayer: (layerId: string) => void;
   setCommand: (command: string) => void;
+  setCommandFeedback: (feedback: string) => void;
   setSelectedEntity: (entity: MarketEntity | null) => void;
   setHoveredEntityId: (entityId: string | null) => void;
   setHoveredTooltip: (tooltip: string | null) => void;
@@ -30,6 +32,7 @@ export const useKratosStore = create<KratosState>((set) => ({
     "flights-1",
   ],
   command: "PMAP<GO>",
+  commandFeedback: "Ready for PMAP, POSH, PSPLC, PBQL, and venue navigation mnemonics.",
   selectedEntity: null,
   hoveredEntityId: null,
   hoveredTooltip: null,
@@ -41,9 +44,9 @@ export const useKratosStore = create<KratosState>((set) => ({
         : [...state.activeLayerIds, layerId],
     })),
   setCommand: (command) => set({ command }),
+  setCommandFeedback: (commandFeedback) => set({ commandFeedback }),
   setSelectedEntity: (selectedEntity) => set({ selectedEntity }),
   setHoveredEntityId: (hoveredEntityId) => set({ hoveredEntityId }),
   setHoveredTooltip: (hoveredTooltip) => set({ hoveredTooltip }),
   setRotationPaused: (rotationPaused) => set({ rotationPaused }),
 }));
-

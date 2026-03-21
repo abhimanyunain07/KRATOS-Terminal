@@ -153,6 +153,44 @@ export type PBQLResponse = {
   };
 };
 
+export type ServiceHealth = {
+  key: string;
+  label: string;
+  status: "live" | "configured" | "degraded" | "offline";
+  detail: string;
+};
+
+export type RuntimeStatus = {
+  commandMnemonics: string[];
+  services: ServiceHealth[];
+  tradeRoutingEnabled: boolean;
+  authEnabled: boolean;
+  pbqlEnabled: boolean;
+};
+
+export type TradeSimulationRequest = {
+  venue: "Kalshi" | "Polymarket";
+  ticker: string;
+  side: "Yes" | "No";
+  stakeUsd: number;
+  price: number;
+  probability: number;
+};
+
+export type TradeSimulationResponse = {
+  venue: "Kalshi" | "Polymarket";
+  ticker: string;
+  side: "Yes" | "No";
+  stakeUsd: number;
+  contracts: number;
+  maxPayoutUsd: number;
+  worstCaseLossUsd: number;
+  estimatedEdgeUsd: number;
+  kellyFraction: number;
+  routeStatus: "simulated" | "credential_required";
+  note: string;
+};
+
 export type MarketUniverse = {
   markets: MarketEntity[];
   arcs: ArcEntity[];
@@ -165,4 +203,3 @@ export type MarketUniverse = {
   flights: FlightTrack[];
   generatedAt: string;
 };
-

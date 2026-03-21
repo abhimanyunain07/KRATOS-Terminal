@@ -1,10 +1,12 @@
 "use client";
 
+import { useTransition } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Activity, ArrowRightLeft, BrainCircuit, ChartColumn, Compass, Newspaper, Radar, Ship, Trophy, Wallet } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { Activity, ArrowRightLeft, BrainCircuit, ChartColumn, Compass, Newspaper, Radar, Search, Ship, Terminal, Trophy, Wallet } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useKratosStore } from "@/store/kratos-store";
+import { resolveTerminalCommand } from "@/lib/terminal-command";
 
 const NAV_ITEMS = [
   { href: "/", label: "Dashboard", short: "DB", icon: Activity },
@@ -37,7 +39,24 @@ function StatusClock() {
 
 export function TerminalShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const { command, setCommand } = useKratosStore();
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+  const { command, commandFeedback, setCommand, setCommandFeedback } = useKratosStore();
+
+  function executeCommand() {
+    const resolved = resolveTerminalCommand(command);
+    setCommandFeedback(resolved.message);
+
+    if (!resolved.href) {
+      return;
+    }
+
+    const href = resolved.href;
+
+    startTransition(() => {
+      router.push(href);
+    });
+  }
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#02060d] text-slate-100">
@@ -87,19 +106,58 @@ export function TerminalShell({ children }: { children: React.ReactNode }) {
                 <h2 className="mt-2 text-xl font-semibold text-white">MAP / BMAP / SPLC / POSH architecture for prediction markets</h2>
               </div>
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-                <div className="flex min-w-[320px] items-center rounded-2xl border border-cyan-400/20 bg-slate-950/80 px-3 py-2 shadow-[inset_0_0_0_1px_rgba(6,182,212,0.08)]">
+                <div className="flex min-w-[340px] items-center rounded-2xl border border-cyan-400/20 bg-slate-950/80 px-3 py-2 shadow-[inset_0_0_0_1px_rgba(6,182,212,0.08)]">
                   <span className="text-[10px] uppercase tracking-[0.35em] text-cyan-300">Command</span>
                   <input
                     value={command}
                     onChange={(event) => setCommand(event.target.value)}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter") {
+                        executeCommand();
+                      }
+                    }}
                     className="ml-3 w-full bg-transparent text-sm text-white outline-none placeholder:text-slate-600"
                     placeholder="PMAP<GO>"
                   />
+                  <button
+                    type="button"
+                    onClick={executeCommand}
+                    className="ml-3 inline-flex h-9 w-9 items-center justify-center rounded-xl border border-cyan-400/20 bg-cyan-400/10 text-cyan-200"
+                    aria-label="Execute terminal command"
+                  >
+                    <Search className="h-4 w-4" />
+                  </button>
                 </div>
                 <div className="flex items-center gap-4 rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-2">
-                  <span className="text-xs text-lime-300">SYS OK</span>
+                  <span className="text-xs text-lime-300">{isPending ? "ROUTING" : "SYS OK"}</span>
                   <StatusClock />
                 </div>
+              </div>
+            </div>
+            <div className="mt-4 flex flex-col gap-3 border-t border-white/8 pt-4 lg:flex-row lg:items-center lg:justify-between">
+              <div className="inline-flex items-center gap-2 text-xs text-slate-400">
+                <Terminal className="h-4 w-4 text-cyan-300" />
+                <span>{commandFeedback}</span>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {["PMAP<GO>", "POSH", "PSPLC", "PBQL", "NEWS", "ARB", "TRADING"].map((preset) => (
+                  <button
+                    key={preset}
+                    type="button"
+                    onClick={() => {
+                      setCommand(preset);
+                      setCommandFeedback(`Staged ${preset}. Press Enter to execute.`);
+                    }}
+                    className={cn(
+                      "rounded-full border px-3 py-1 text-[10px] uppercase tracking-[0.28em]",
+                      command === preset
+                        ? "border-cyan-400/35 bg-cyan-400/10 text-cyan-200"
+                        : "border-white/8 bg-white/[0.03] text-slate-400",
+                    )}
+                  >
+                    {preset}
+                  </button>
+                ))}
               </div>
             </div>
           </header>
@@ -109,4 +167,3 @@ export function TerminalShell({ children }: { children: React.ReactNode }) {
     </div>
   );
 }
-

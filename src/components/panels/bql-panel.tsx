@@ -9,21 +9,11 @@ import { useKratosStore } from "@/store/kratos-store";
 
 const DEFAULT_QUERY = "get(EVENT_ODDS,RISK_SCORE,EV,KELLY_SIZE,VOL_COMBINED) for(universe('GLOBAL'), values=[PROB_POLY,VOL_COMBINED,RISK])";
 
-export function BqlPanel() {
+export function BqlPanel({ initialQuery }: { initialQuery?: string }) {
   const { selectedEntity, hoveredTooltip, command } = useKratosStore();
-  const [query, setQuery] = useState(DEFAULT_QUERY);
+  const [query, setQuery] = useState(initialQuery ?? DEFAULT_QUERY);
   const [response, setResponse] = useState<PBQLResponse | null>(null);
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (!selectedEntity) {
-      return;
-    }
-
-    setQuery(
-      `get(EVENT_ODDS,RISK_SCORE,EV,KELLY_SIZE,VOL_COMBINED) for(universe('${selectedEntity.category.toUpperCase()}'), values=[PROB_POLY,VOL_COMBINED,RISK])`,
-    );
-  }, [selectedEntity]);
 
   const runQuery = useCallback(async (nextQuery = query) => {
     setLoading(true);
@@ -45,8 +35,18 @@ export function BqlPanel() {
   }, [query]);
 
   useEffect(() => {
-    void runQuery(DEFAULT_QUERY);
-  }, [runQuery]);
+    if (!selectedEntity) {
+      return;
+    }
+
+    setQuery(
+      `get(EVENT_ODDS,RISK_SCORE,EV,KELLY_SIZE,VOL_COMBINED) for(universe('${selectedEntity.category.toUpperCase()}'), values=[PROB_POLY,VOL_COMBINED,RISK])`,
+    );
+  }, [selectedEntity]);
+
+  useEffect(() => {
+    void runQuery(initialQuery ?? DEFAULT_QUERY);
+  }, [initialQuery, runQuery]);
 
   return (
     <TerminalPanel
