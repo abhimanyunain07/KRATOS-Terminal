@@ -1,0 +1,48 @@
+# KRATOS Terminal
+
+KRATOS Terminal is a Bloomberg-inspired PMAP stack for prediction markets, rebuilt as a fresh Next.js 15 application. The current codebase delivers a dense terminal shell, a fully interactive `react-globe.gl` Gods Eye page, a PBQL-style query API, cross-page market normalization, and venue-aware analytics panels for prediction-market workflows.
+
+## What is included
+
+- A Next.js 15 App Router foundation with strict TypeScript and Tailwind-driven custom terminal styling
+- A multi-page Bloomberg-style shell covering dashboard, Gods Eye, markets, arbitrage, news impact, macro, sports, trading, PBQL, POSH, PSPLC, MiroFish, and portfolio
+- A real Polymarket Gamma fetch path with resilient normalization plus a Kalshi adapter path and safe fallback aggregators for unsupported feeds
+- A PBQL-like server route at `/api/pbql` for server-side aggregation against the normalized universe
+- An interactive 3D globe with clickable market points, dependency arcs, hover tooltips, label drill-downs, and POSH-inspired vessel pulse rings
+- A 390-plus layer catalog and Zustand-based cross-panel interaction state
+
+## Quick start
+
+1. Install dependencies:
+
+```bash
+npm install
+```
+
+2. Run the development server:
+
+```bash
+npm run dev
+```
+
+3. Open [http://localhost:3000](http://localhost:3000)
+
+## Environment variables
+
+These are optional for the current build, but the app is structured to consume them:
+
+```bash
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+KALSHI_BASE_URL=
+KALSHI_API_KEY=
+KALSHI_API_SECRET=
+POLYMARKET_API_KEY=
+NEWS_API_KEY=
+```
+
+## Notes
+
+- Polymarket data is fetched live when the endpoint is reachable.
+- Kalshi, Supabase auth, and wallet execution are environment-gated rather than faked.
+- The UI intentionally exposes production-ready slots for authenticated execution without pretending that unavailable credentials or proprietary feeds are live.

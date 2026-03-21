@@ -1,0 +1,79 @@
+@import "tailwindcss";
+
+:root {
+  --background: #02060d;
+  --foreground: #f8fafc;
+  --cyber-cyan: #06f0e8;
+  --amber-glow: #f59e0b;
+  --terminal-black: rgba(0, 0, 0, 0.92);
+}
+
+* {
+  box-sizing: border-box;
+  font-family:
+    "Space Mono",
+    "IBM Plex Mono",
+    "SFMono-Regular",
+    "Menlo",
+    "Monaco",
+    "Consolas",
+    "Liberation Mono",
+    "Courier New",
+    monospace;
+}
+
+html {
+  background: var(--background);
+  color: var(--foreground);
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top, rgba(6, 182, 212, 0.08), transparent 28%),
+    radial-gradient(circle at 90% 100%, rgba(245, 158, 11, 0.08), transparent 24%),
+    linear-gradient(180deg, rgba(2, 6, 13, 0.96) 0%, rgba(0, 0, 0, 1) 100%);
+  color: var(--foreground);
+}
+
+.text-shadow-cyan {
+  text-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+}
+
+.terminal-panel {
+  position: relative;
+}
+
+.terminal-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.04), transparent 28%);
+  pointer-events: none;
+}
+
+.scanlines::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.24) 50%),
+    linear-gradient(90deg, rgba(255, 0, 0, 0.04), rgba(0, 255, 255, 0.02), rgba(0, 0, 255, 0.04));
+  background-size: 100% 2px, 3px 100%;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.24);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
