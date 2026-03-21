@@ -1,4 +1,5 @@
 import { PageHeader } from "@/components/layout/page-header";
+import { AuthPanel } from "@/components/panels/auth-panel";
 import { AuthReadinessPanel } from "@/components/panels/auth-readiness-panel";
 import { TradingConsole } from "@/components/panels/trading-console";
 import { getRuntimeStatus } from "@/lib/runtime-status";
@@ -15,9 +16,11 @@ export default function TradingPage() {
       />
       <div className="grid gap-4 xl:grid-cols-[1fr_0.38fr]">
         <TradingConsole runtime={runtime} />
-        <AuthReadinessPanel runtime={runtime} />
+        <div className="space-y-4">
+          <AuthPanel runtime={runtime} />
+          <AuthReadinessPanel runtime={runtime} />
+        </div>
       </div>
     </div>
   );
 }
-

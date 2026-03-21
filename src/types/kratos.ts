@@ -168,6 +168,30 @@ export type RuntimeStatus = {
   pbqlEnabled: boolean;
 };
 
+export type PortfolioPosition = {
+  id: string;
+  venue: "Kalshi" | "Polymarket";
+  ticker: string;
+  title: string;
+  side: "Yes" | "No";
+  contracts: number;
+  averagePrice: number;
+  markProbability: number;
+  unrealizedPnlUsd: number;
+  status: "simulated" | "live" | "unavailable";
+};
+
+export type PortfolioSnapshot = {
+  status: "auth_unavailable" | "auth_required" | "connected_unconfigured";
+  accountLabel: string;
+  netPnlUsd: number;
+  riskBudgetPct: number;
+  openPositions: number;
+  grossExposureUsd: number;
+  positions: PortfolioPosition[];
+  note: string;
+};
+
 export type TradeSimulationRequest = {
   venue: "Kalshi" | "Polymarket";
   ticker: string;
