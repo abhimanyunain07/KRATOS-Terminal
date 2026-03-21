@@ -2,6 +2,10 @@
 
 KRATOS Terminal is a Bloomberg-inspired PMAP stack for prediction markets, rebuilt as a fresh Next.js 15 application. The current codebase delivers a dense terminal shell, a fully interactive `react-globe.gl` Gods Eye page, a PBQL-style query API, cross-page market normalization, and venue-aware analytics panels for prediction-market workflows.
 
+Live deployment:
+
+- [kratos-terminal.vercel.app](https://kratos-terminal.vercel.app)
+
 ## What is included
 
 - A Next.js 15 App Router foundation with strict TypeScript and Tailwind-driven custom terminal styling
