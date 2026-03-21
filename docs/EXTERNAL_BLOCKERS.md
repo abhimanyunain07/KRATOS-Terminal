@@ -1,32 +1,20 @@
-# External Blockers
+# External Integrations
 
-These are the remaining non-code blockers for completing live deployment and production verification.
+The required deployment blockers have been cleared.
 
-## Vercel
+Current live deployment:
 
-- Vercel CLI is installed locally.
-- Deployment cannot proceed until a Vercel account login or token is provided.
-- You can complete this by either:
-  - running `./node_modules/.bin/vercel login`
-  - setting a `VERCEL_TOKEN`
+- [kratos-terminal.vercel.app](https://kratos-terminal.vercel.app)
 
-## Supabase
+Current configured production env:
 
-- Supabase CLI is installed locally.
-- Backend provisioning cannot proceed until a Supabase access token is provided.
-- You can complete this by either:
-  - running `./node_modules/.bin/supabase login`
-  - setting `SUPABASE_ACCESS_TOKEN`
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `DATABASE_URL`
 
-## Required production environment variables
+## Remaining optional integrations
 
-```bash
-NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
-DATABASE_URL=
-```
-
-## Optional but recommended production environment variables
+These are still unset, but the app is live without them:
 
 ```bash
 REDIS_URL=
@@ -41,5 +29,12 @@ POLYMARKET_API_KEY=
 - `npm run typecheck`
 - `npm run build`
 - `npm run smoke:test:local`
+- `npm run smoke:test -- https://kratos-terminal.vercel.app`
 - local screenshots in `artifacts/screenshots`
 
+## Remaining caveats
+
+- Redis-backed realtime fanout is still optional until `REDIS_URL` is added.
+- Kalshi trading remains simulation-only until venue credentials are supplied.
+- External news enrichment remains on fallback cards until `NEWS_API_KEY` is supplied.
+- Git-triggered Vercel auto-deploy is not connected because the Vercel account still needs a GitHub Login Connection.

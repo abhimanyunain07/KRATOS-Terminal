@@ -64,11 +64,12 @@ npm run screenshots:local
 
 ## Environment variables
 
-These are optional for the current build, but the app is structured to consume them. You can start from `.env.example`:
+These are the main runtime env vars the app understands. The live deployment already has the required Supabase and database values configured:
 
 ```bash
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
+DATABASE_URL=
 KALSHI_BASE_URL=
 KALSHI_API_KEY=
 KALSHI_API_SECRET=
@@ -83,7 +84,7 @@ NEWS_API_KEY=
 - The UI intentionally exposes production-ready slots for authenticated execution without pretending that unavailable credentials or proprietary feeds are live.
 - Deployment handoff details live in `docs/DEPLOYMENT.md`.
 - Supabase provisioning details live in `docs/SUPABASE_SETUP.md`.
-- Remaining external-auth blockers are documented in `docs/EXTERNAL_BLOCKERS.md`.
+- Remaining optional production integrations are documented in `docs/EXTERNAL_BLOCKERS.md`.
 
 ## Local Demo Assets
 
