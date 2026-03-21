@@ -9,6 +9,7 @@
     "lint": "ESLINT_USE_FLAT_CONFIG=false eslint . --ext .js,.jsx,.ts,.tsx",
     "typecheck": "tsc --noEmit",
     "check:env": "node scripts/check-env.mjs",
+    "smoke:test": "node scripts/smoke-test.mjs",
     "ci": "npm run typecheck && npm run lint && npm run build"
   },
   "dependencies": {

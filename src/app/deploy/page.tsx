@@ -22,6 +22,21 @@ export default function DeployPage() {
           </ol>
         </TerminalPanel>
       </div>
+      <div className="grid gap-4 xl:grid-cols-[1fr_0.42fr]">
+        <TerminalPanel title="Smoke Test" subtitle="Post-deploy verification">
+          <div className="space-y-3 text-sm text-slate-300">
+            <p>Run `npm run smoke:test -- https://your-deployment-url.vercel.app` after a preview or production release.</p>
+            <p>The smoke test hits the home page, deploy page, runtime health, deep health, deploy readiness, and markets API.</p>
+          </div>
+        </TerminalPanel>
+        <TerminalPanel title="Env Templates" subtitle="What to set in Vercel">
+          <div className="space-y-3 text-sm text-slate-300">
+            <p>Use `.env.production.example` as the deployment reference template.</p>
+            <p>Use `supabase/schema.sql` before enabling authenticated persistence in production.</p>
+            <p>Use `docs/DEPLOYMENT.md` as the release runbook.</p>
+          </div>
+        </TerminalPanel>
+      </div>
     </div>
   );
 }
