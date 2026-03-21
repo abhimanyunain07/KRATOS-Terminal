@@ -4,6 +4,7 @@ import { useState } from "react";
 import { ShieldCheck, Wallet2 } from "lucide-react";
 import { TerminalPanel } from "@/components/ui/terminal-panel";
 import type { RuntimeStatus, TradeSimulationResponse } from "@/types/kratos";
+import { authorizedFetch } from "@/lib/supabase";
 
 export function TradingConsole({ runtime }: { runtime: RuntimeStatus }) {
   const [venue, setVenue] = useState<"Kalshi" | "Polymarket">("Kalshi");
@@ -14,10 +15,12 @@ export function TradingConsole({ runtime }: { runtime: RuntimeStatus }) {
   const [probability, setProbability] = useState("0.68");
   const [result, setResult] = useState<TradeSimulationResponse | null>(null);
   const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
 
   async function simulateTrade() {
     setLoading(true);
     setResult(null);
+    setMessage(null);
 
     try {
       const response = await fetch("/api/trade/simulate", {
@@ -40,6 +43,32 @@ export function TradingConsole({ runtime }: { runtime: RuntimeStatus }) {
     } finally {
       setLoading(false);
     }
+  }
+
+  async function recordPosition() {
+    if (!result) {
+      return;
+    }
+
+    const response = await authorizedFetch("/api/positions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        venue: result.venue,
+        ticker: result.ticker,
+        title: result.ticker,
+        side: result.side,
+        contracts: result.contracts,
+        averagePrice: Number(price),
+        markProbability: Number(probability),
+        unrealizedPnlUsd: result.estimatedEdgeUsd,
+      }),
+    });
+
+    const payload = (await response.json()) as { message?: string };
+    setMessage(payload.message ?? (response.ok ? "Simulated position recorded." : "Unable to record position."));
   }
 
   return (
@@ -121,7 +150,16 @@ export function TradingConsole({ runtime }: { runtime: RuntimeStatus }) {
             >
               {runtime.tradeRoutingEnabled ? "Route to Venue" : "Credentials Required"}
             </button>
+            <button
+              type="button"
+              onClick={() => void recordPosition()}
+              disabled={!result}
+              className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-slate-300 disabled:cursor-not-allowed disabled:opacity-45"
+            >
+              Record Sim Position
+            </button>
           </div>
+          {message ? <p className="text-xs text-amber-200">{message}</p> : null}
           {result ? (
             <div className="rounded-2xl border border-cyan-400/20 bg-cyan-400/5 p-4">
               <p className="text-[10px] uppercase tracking-[0.35em] text-cyan-300">Simulation Output</p>

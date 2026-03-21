@@ -1,5 +1,6 @@
 import { PageHeader } from "@/components/layout/page-header";
 import { BqlPanel } from "@/components/panels/bql-panel";
+import { SavedQueriesPanel } from "@/components/panels/saved-queries-panel";
 
 export default async function PbqlPage({
   searchParams,
@@ -15,7 +16,10 @@ export default async function PbqlPage({
         title="Query workbench"
         description="Bloomberg-style query input for server-side aggregation across the prediction-market universe."
       />
-      <BqlPanel initialQuery={params.query} />
+      <div className="grid gap-4 xl:grid-cols-[1fr_0.38fr]">
+        <BqlPanel initialQuery={params.query} />
+        <SavedQueriesPanel />
+      </div>
     </div>
   );
 }

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import type { PortfolioSnapshot } from "@/types/kratos";
 import { MetricCard } from "@/components/ui/metric-card";
 import { TerminalPanel } from "@/components/ui/terminal-panel";
+import { PositionsPanel } from "@/components/panels/positions-panel";
 
 export function PortfolioSummary() {
   const [snapshot, setSnapshot] = useState<PortfolioSnapshot | null>(null);
@@ -75,7 +76,7 @@ export function PortfolioSummary() {
           </div>
         </div>
       </TerminalPanel>
+      <PositionsPanel />
     </div>
   );
 }
-

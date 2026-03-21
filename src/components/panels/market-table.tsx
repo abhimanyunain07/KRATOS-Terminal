@@ -5,25 +5,18 @@ import type { MarketEntity } from "@/types/kratos";
 import { formatCompactNumber, formatPercent } from "@/lib/utils";
 import { useKratosStore } from "@/store/kratos-store";
 import { TerminalPanel } from "@/components/ui/terminal-panel";
-import { getBrowserAccessToken } from "@/lib/supabase";
+import { authorizedFetch } from "@/lib/supabase";
 
 export function MarketTable({ title, markets }: { title: string; markets: MarketEntity[] }) {
   const { setSelectedEntity } = useKratosStore();
   const [message, setMessage] = useState<string | null>(null);
 
   async function saveToWatchlist(market: MarketEntity) {
-    const accessToken = await getBrowserAccessToken();
-    const headers = new Headers({
-      "Content-Type": "application/json",
-    });
-
-    if (accessToken) {
-      headers.set("Authorization", `Bearer ${accessToken}`);
-    }
-
-    const response = await fetch("/api/watchlist", {
+    const response = await authorizedFetch("/api/watchlist", {
       method: "POST",
-      headers,
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(market),
     });
 

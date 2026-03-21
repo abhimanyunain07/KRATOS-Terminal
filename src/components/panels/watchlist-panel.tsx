@@ -4,21 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import type { WatchlistSnapshot } from "@/types/kratos";
 import { TerminalPanel } from "@/components/ui/terminal-panel";
 import { formatCompactNumber, formatPercent } from "@/lib/utils";
-import { getBrowserAccessToken, getBrowserSupabaseClient } from "@/lib/supabase";
-
-async function authorizedFetch(input: RequestInfo | URL, init?: RequestInit) {
-  const token = await getBrowserAccessToken();
-  const headers = new Headers(init?.headers);
-
-  if (token) {
-    headers.set("Authorization", `Bearer ${token}`);
-  }
-
-  return fetch(input, {
-    ...init,
-    headers,
-  });
-}
+import { authorizedFetch, getBrowserSupabaseClient } from "@/lib/supabase";
 
 export function WatchlistPanel() {
   const [snapshot, setSnapshot] = useState<WatchlistSnapshot | null>(null);
@@ -100,4 +86,3 @@ export function WatchlistPanel() {
     </TerminalPanel>
   );
 }
-

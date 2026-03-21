@@ -1,19 +1,21 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Download, Play } from "lucide-react";
+import { Download, Play, Save } from "lucide-react";
 import type { PBQLResponse } from "@/types/kratos";
 import { TerminalPanel } from "@/components/ui/terminal-panel";
 import { formatCompactNumber, formatPercent } from "@/lib/utils";
+import { authorizedFetch } from "@/lib/supabase";
 import { useKratosStore } from "@/store/kratos-store";
 
 const DEFAULT_QUERY = "get(EVENT_ODDS,RISK_SCORE,EV,KELLY_SIZE,VOL_COMBINED) for(universe('GLOBAL'), values=[PROB_POLY,VOL_COMBINED,RISK])";
 
-export function BqlPanel({ initialQuery }: { initialQuery?: string }) {
+export function BqlPanel({ initialQuery, onSaved }: { initialQuery?: string; onSaved?: () => void }) {
   const { selectedEntity, hoveredTooltip, command } = useKratosStore();
   const [query, setQuery] = useState(initialQuery ?? DEFAULT_QUERY);
   const [response, setResponse] = useState<PBQLResponse | null>(null);
   const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
 
   const runQuery = useCallback(async (nextQuery = query) => {
     setLoading(true);
@@ -48,6 +50,20 @@ export function BqlPanel({ initialQuery }: { initialQuery?: string }) {
     void runQuery(initialQuery ?? DEFAULT_QUERY);
   }, [initialQuery, runQuery]);
 
+  async function saveQuery() {
+    const name = query.slice(0, 40) || "Saved PBQL Query";
+    const response = await authorizedFetch("/api/pbql/saved", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name, query }),
+    });
+    const payload = (await response.json()) as { message?: string };
+    setMessage(payload.message ?? (response.ok ? "Query saved." : "Unable to save query."));
+    onSaved?.();
+  }
+
   return (
     <TerminalPanel
       title="PBQL Inspector"
@@ -64,6 +80,14 @@ export function BqlPanel({ initialQuery }: { initialQuery?: string }) {
           </button>
           <button
             type="button"
+            onClick={() => void saveQuery()}
+            className="inline-flex items-center gap-2 rounded-xl border border-amber-400/30 bg-amber-400/10 px-3 py-2 text-xs text-amber-200"
+          >
+            <Save className="h-3 w-3" />
+            Save
+          </button>
+          <button
+            type="button"
             className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-xs text-slate-300"
           >
             <Download className="h-3 w-3" />
@@ -74,6 +98,7 @@ export function BqlPanel({ initialQuery }: { initialQuery?: string }) {
       className="h-full"
     >
       <div className="space-y-4">
+        {message ? <p className="text-xs text-amber-200">{message}</p> : null}
         <div className="rounded-2xl border border-white/8 bg-slate-950/80 p-3">
           <p className="text-[10px] uppercase tracking-[0.35em] text-slate-500">Command Context</p>
           <p className="mt-2 text-sm text-cyan-200">{command}</p>

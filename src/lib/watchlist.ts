@@ -107,6 +107,7 @@ export async function addWatchlistItem(accessToken: string | null | undefined, m
 
   const { error } = await client.from("watchlist_items").upsert(
     {
+      user_id: user.id,
       market_id: market.id,
       title: market.title,
       platform: market.platform,
@@ -170,4 +171,3 @@ export async function removeWatchlistItem(accessToken: string | null | undefined
     message: "Market removed from watchlist.",
   };
 }
-

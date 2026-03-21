@@ -211,6 +211,26 @@ export type WatchlistSnapshot = {
   note: string;
 };
 
+export type SavedQueryItem = {
+  id: string;
+  name: string;
+  query: string;
+  createdAt: string;
+};
+
+export type SavedQuerySnapshot = {
+  status: "auth_unavailable" | "auth_required" | "connected" | "connected_unconfigured";
+  accountLabel: string;
+  items: SavedQueryItem[];
+  note: string;
+};
+
+export type SessionSnapshot = {
+  status: "auth_unavailable" | "auth_required" | "authenticated";
+  email: string | null;
+  note: string;
+};
+
 export type TradeSimulationRequest = {
   venue: "Kalshi" | "Polymarket";
   ticker: string;

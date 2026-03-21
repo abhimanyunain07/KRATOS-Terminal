@@ -12,6 +12,7 @@ KRATOS Terminal is a Bloomberg-inspired PMAP stack for prediction markets, rebui
 - Runtime health and trade simulation routes at `/api/health` and `/api/trade/simulate`
 - Supabase-ready auth panel plus honest portfolio status routes at `/api/portfolio`
 - Authenticated watchlist persistence route at `/api/watchlist` plus SQL schema in `supabase/schema.sql`
+- Authenticated saved PBQL queries at `/api/pbql/saved`, simulated position persistence at `/api/positions`, and session verification at `/api/session`
 - An interactive 3D globe with clickable market points, dependency arcs, hover tooltips, label drill-downs, and POSH-inspired vessel pulse rings
 - A 390-plus layer catalog and Zustand-based cross-panel interaction state
 

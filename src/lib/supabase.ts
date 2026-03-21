@@ -35,3 +35,16 @@ export async function getBrowserAccessToken() {
   return data.session?.access_token ?? null;
 }
 
+export async function authorizedFetch(input: RequestInfo | URL, init?: RequestInit) {
+  const token = await getBrowserAccessToken();
+  const headers = new Headers(init?.headers);
+
+  if (token) {
+    headers.set("Authorization", `Bearer ${token}`);
+  }
+
+  return fetch(input, {
+    ...init,
+    headers,
+  });
+}
